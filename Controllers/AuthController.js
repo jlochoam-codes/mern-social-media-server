@@ -1,10 +1,5 @@
-import bcrypt from 'bcrypt';
 import UserModel from "../Models/UserModel.js";
-
-const hashPassword = async pw => {
-  const salt = await bcrypt.genSalt(10); // Salt of 10 rounds
-  return bcrypt.hash(pw, salt);
-};
+import { hashPassword, compareHashedPassword } from "../Utils/HashUtils.js";
 
 // Create a user
 export const registerUser = async (req, res) => {
@@ -44,7 +39,7 @@ export const loginUser = async (req, res) => {
   try {
     const user = await UserModel.findOne({ username: username });
     if (user) {
-      const correctPassword = await bcrypt.compare(password, user.password);
+      const correctPassword = await compareHashedPassword(password, user.password);
       correctPassword ?
         res.status(200).json(user) :
         res.status(401).json({ message: 'Wrong credentials' });
