@@ -1,4 +1,10 @@
+import bcrypt from 'bcrypt';
 import UserModel from "../Models/UserModel.js";
+
+const hashPassword = async pw => {
+  const salt = await bcrypt.genSalt(10); // Salt of 10 rounds
+  return bcrypt.hash(pw, salt);
+};
 
 // Create a user
 export const registerUser = async (req, res) => {
@@ -6,10 +12,14 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ message: 'Request body is empty' });
     return;
   }
+
   const { username, password, firstName, lastName } = req.body;
+
+  const hashedPassword = await hashPassword(password);
+
   const newUser = new UserModel({
     username,
-    password,
+    password: hashedPassword,
     firstName,
     lastName,
   });
