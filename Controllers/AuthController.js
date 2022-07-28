@@ -2,6 +2,10 @@ import UserModel from "../Models/UserModel.js";
 
 // Create a user
 export const registerUser = async (req, res) => {
+  if (!req.body) {
+    res.status(500).json({ message: 'Request body is empty' });
+    return;
+  }
   const { username, password, firstName, lastName } = req.body;
   const newUser = new UserModel({
     username,
