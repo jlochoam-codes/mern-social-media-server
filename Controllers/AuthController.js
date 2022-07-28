@@ -2,7 +2,7 @@ import UserModel from "../Models/UserModel.js";
 
 // Create a user
 export const registerUser = async (req, res) => {
-  if (!req.body) {
+  if (!req.body || Object.keys(req.body).length === 0) {
     res.status(500).json({ message: 'Request body is empty' });
     return;
   }
