@@ -72,8 +72,8 @@ export const followUser = async (req, res) => {
   if (userToFollowId === requesterUserId) {
     res.status(403).json({ message: 'Action forbidden, a user cannot follow itself' });
   } else try {
-    const userToFollow = UserModel.findById(userToFollowId);
-    const userFollowing = UserModel.findById(requesterUserId);
+    const userToFollow = await UserModel.findById(userToFollowId);
+    const userFollowing = await UserModel.findById(requesterUserId);
 
     // If the requester does not follow the user already:
     if (!userToFollow.followers.includes(requesterUserId)) {
@@ -81,6 +81,29 @@ export const followUser = async (req, res) => {
       await userFollowing.updateOne({ $push: { following: userToFollowId } });
       res.status(200).json({ message: `Followed user with id ${userToFollowId}` });
     } else res.status(403).json({ message: 'Action forbidden, user is already followed' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+// Unfollow a user
+export const unfollowUser = async (req, res) => {
+  const userToUnfollowId = req.params.id;
+  const { requesterUserId } = req.body;
+
+  // A user cannot unfollow itself
+  if (userToUnfollowId === requesterUserId) {
+    res.status(403).json({ message: 'Action forbidden, a user cannot unfollow itself' });
+  } else try {
+    const userToUnfollow = await UserModel.findById(userToUnfollowId);
+    const userUnfollowing = await UserModel.findById(requesterUserId);
+
+    // If the requester follows the user:
+    if (userToUnfollow.followers.includes(requesterUserId)) {
+      await userToUnfollow.updateOne({ $pull: { followers: requesterUserId } });
+      await userUnfollowing.updateOne({ $pull: { following: userToUnfollowId } });
+      res.status(200).json({ message: `Unfollowed user with id ${userToUnfollowId}` });
+    } else res.status(403).json({ message: 'Action forbidden, user is not followed' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
