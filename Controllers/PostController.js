@@ -1,4 +1,6 @@
 import PostModel from "../Models/PostModel.js";
+import UserModel from "../Models/UserModel.js";
+import { sortDatesDesc } from "../Utils/SortUtils.js";
 
 // Create a post
 export const createPost = async (req, res) => {
@@ -31,12 +33,25 @@ export const getPost = async (req, res) => {
   }
 };
 
-// Get all posts
-export const getAllPosts = async (req, res) => {
+// Get all posts for a user (its own posts, plus posts from users it follows)
+export const getTimelinePosts = async (req, res) => {
+  const userId = req.params.id;
   try {
-    const posts = await PostModel.find({});
-    if (posts) res.status(200).json(posts);
-    else res.status(200).json({ message: 'No posts to show... How about you create one?' });
+    const user = await UserModel.findById(userId);
+    if (user) {
+      const userOwnPosts = await PostModel.find({ userId: userId });
+      const posts = [...userOwnPosts];
+
+      for (const followedUserId of user.following) {
+        const followedUserPosts = await PostModel.find({ userId: followedUserId });
+        for (const p of followedUserPosts) {
+          posts.push(p);
+        }
+      }
+
+      posts.sort(sortDatesDesc);
+      res.status(200).json(posts);
+    } else res.status(404).json({ message: `User with id ${userId} NOT found` });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -2,7 +2,7 @@ import express from 'express';
 import {
   createPost,
   deletePost,
-  getAllPosts,
+  getTimelinePosts,
   getPost,
   likePost,
   unlikePost
@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.post('/post/create', createPost);
 router.get('/post/:id', getPost);
-router.get('/', getAllPosts);
+router.get('/:id', getTimelinePosts);
 router.delete('/post/:id', deletePost);
 router.put('/post/like/:id', likePost);
 router.put('/post/unlike/:id', unlikePost);
