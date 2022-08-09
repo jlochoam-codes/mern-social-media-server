@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import AuthRoute from './Routes/AuthRoutes.js';
 import UserRoute from './Routes/UserRoutes.js';
 import PostRoute from './Routes/PostRoutes.js';
@@ -15,6 +16,7 @@ const bodyParserConfig = {
 };
 app.use(bodyParser.json(bodyParserConfig));
 app.use(bodyParser.urlencoded(bodyParserConfig));
+app.use(cors());
 
 // Set required env variables
 dotenv.config();
