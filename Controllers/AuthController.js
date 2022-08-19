@@ -21,6 +21,12 @@ export const registerUser = async (req, res) => {
   });
 
   try {
+    const userAlreadyTaken = await UserModel.findOne({ username });
+    if (userAlreadyTaken) {
+      res.status(400).json({ message: `User ${username} already exists, try with another one` });
+      return;
+    }
+
     await newUser.save();
     console.log('New user created successfully');
     console.log(newUser);
