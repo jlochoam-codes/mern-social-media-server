@@ -54,9 +54,9 @@ export const loginUser = async (req, res) => {
     if (user) {
       const correctPassword = await compareHashedPassword(password, user.password);
       if (correctPassword) {
-        console.log('User logged in successfully');
-        console.log(user);
-        res.status(200).json(user);
+        const token = jwtSign(user, '2h');
+        console.log(`User ${user.username} logged in successfully`);
+        res.status(200).json({ user, token });
       } else {
         console.error('Wrong credentials');
         res.status(401).json({ message: 'Wrong credentials' });
