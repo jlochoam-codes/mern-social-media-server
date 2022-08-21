@@ -1,5 +1,6 @@
 import UserModel from "../Models/UserModel.js";
 import { hashPassword, compareHashedPassword } from "../Utils/HashUtils.js";
+import { jwtSign } from "../Utils/JwtUtils.js";
 
 // Create a user
 export const registerUser = async (req, res) => {
@@ -27,10 +28,11 @@ export const registerUser = async (req, res) => {
       return;
     }
 
-    await newUser.save();
-    console.log('New user created successfully');
-    console.log(newUser);
-    res.status(201).json(newUser);
+    const user = await newUser.save();
+    const token = jwtSign(user, '2h');
+
+    console.log(`New user ${user.username} created (signed up) successfully`);
+    res.status(201).json({ user, token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: err.message });
