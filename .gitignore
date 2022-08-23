@@ -1,3 +1,6 @@
+# Image folder for posts (to avoid repo from being too heavy)
+public/images/
+
 # Logs
 logs
 *.log
