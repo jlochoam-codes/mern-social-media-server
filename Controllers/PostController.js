@@ -10,6 +10,8 @@ export const createPost = async (req, res) => {
   }
 
   const { userId, img, desc } = req.body;
+  if (!desc) return res.status(400).json(`Description is required for all posts`);
+
   const newPost = new PostModel({ userId, img, desc });
 
   try {
