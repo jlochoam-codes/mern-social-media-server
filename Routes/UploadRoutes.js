@@ -1,4 +1,7 @@
+import express from 'express';
 import multer from 'multer';
+
+const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -10,10 +13,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-export const uploadImage = upload.single("file", (req, res) => {
+router.post('/', upload.single("file", (req, res) => {
   try {
-    return res.status(201).json(`Successfully uploaded file ${req}`);
+    return res.status(201).json({ message: "Image uploaded successfully" });
   } catch (err) {
     console.error(err);
   }
-});
+}));
+
+export default router;
