@@ -10,6 +10,10 @@ import UploadRoute from './Routes/UploadRoutes.js';
 
 const app = express();
 
+// Make "images" folder inside "public" available for the client
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
+
 // Middleware
 const bodyParserConfig = {
   limit: "30mb",
