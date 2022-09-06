@@ -18,10 +18,6 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
     profilePicture: {
       type: String,
       default: '',
@@ -30,15 +26,11 @@ const UserSchema = mongoose.Schema(
       type: String,
       default: '',
     },
-    about: {
-      type: String,
-      default: '',
-    },
     city: {
       type: String,
       default: '',
     },
-    company: {
+    job: {
       type: String,
       default: '',
     },

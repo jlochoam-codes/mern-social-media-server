@@ -22,10 +22,10 @@ export const getUser = async (req, res) => {
 // Update a user
 export const updateUser = async (req, res) => {
   const updatingUserId = req.params.id;
-  const { requesterUserId, isUserAdmin, password } = req.body;
+  const { requesterUserId, password } = req.body;
 
-  // If a user wants to update its own profile, or if request author is admin, allow updates
-  if (updatingUserId === requesterUserId || isUserAdmin) {
+  // If a user wants to update its own profile, allow updates
+  if (updatingUserId === requesterUserId) {
     // If a user wants to update password, it must be hashed first
     if (password) {
       const hashedPassword = await hashPassword(password);
@@ -48,10 +48,10 @@ export const updateUser = async (req, res) => {
 // Delete a user
 export const deleteUser = async (req, res) => {
   const deletingUserId = req.params.id;
-  const { requesterUserId, isUserAdmin } = req.body;
+  const { requesterUserId } = req.body;
 
-  // If a user wants to delete its own profile, or if request author is admin, allow delete
-  if (deletingUserId === requesterUserId || isUserAdmin) {
+  // If a user wants to delete its own profile, allow delete
+  if (deletingUserId === requesterUserId) {
     try {
       await UserModel.findByIdAndDelete(deletingUserId);
       res.status(200).json({ message: `Deleted user with id ${deletingUserId}` });
